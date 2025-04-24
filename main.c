@@ -4,7 +4,6 @@
 #include <unistd.h>
 
 #include "vec-str.h"
-#include "unicode-length-utf8.h"
 
 #define MAX (1024 + 1)
 
@@ -105,10 +104,18 @@ int main (int argc, char *argv[])
             break;
         }
 
+        size_t len = strlen (buffer);
+
+        if (len < (MAX - 1) ||
+            buffer[MAX - 1] == '\n')
+        {
+            buffer[len - 1] = '\0';
+        }
+
         char *s = strdup (buffer);
         vec_str_push (&line, s);
 
-        if (strlen (buffer) < (MAX - 1) ||
+        if (len < (MAX - 1) ||
             buffer[MAX - 1] == '\n')
         {
             if (line.total_str_length >= min &&
