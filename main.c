@@ -118,9 +118,11 @@ int main (int argc, char *argv[])
             }
 
             vec_str_free (&line);
+            vec_str_init (&line, MIN_CAP);
         }
     }
 
+    vec_str_free (&line);
 exit_program:
     return ret;
 }
@@ -139,6 +141,6 @@ void usage (int err)
          " The options are:\n"
          "  -h\t\tDispaly this information\n"
          "  -n <number>\t\tPrint any line of at least <number> codepoints.\n"
-         "  -m <number>\t\tPrint any line of at most <number> codepoints."
+         "  -m <number>\t\tPrint any line of at most <number> codepoints.\n"
         );
 }
