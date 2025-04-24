@@ -53,5 +53,5 @@ void vec_str_print(const struct VecStr *self)
     {
         printf("%s", self->data[i]);
     }
-    //printf("\n");
+    printf("\n");
 }
