@@ -4,8 +4,9 @@
 #include <unistd.h>
 
 #include "vec-str.h"
+#include "unicode-length-utf8.h"
 
-#define MAX (1024 + 1)
+#define MAX (2 + 1)
 
 void usage (int err);
 
@@ -106,25 +107,23 @@ int main (int argc, char *argv[])
 
         size_t len = strlen (buffer);
 
-        if (len < (MAX - 1) ||
-            buffer[MAX - 1] == '\n')
-        {
-            buffer[len - 1] = '\0';
-        }
-
         char *s = strdup (buffer);
-        vec_str_push (&line, s);
+        vec_str_push (&line, s, len);
 
         if (len < (MAX - 1) ||
-            buffer[MAX - 1] == '\n')
+            buffer[len - 1] == '\n')
         {
-            if (line.total_str_length >= min &&
-                line.total_str_length <= max)
+            char *p = vec_str_line (&line);
+            vec_str_free (&line);
+            size_t ucp_len = unicode_length_u8string (p);
+
+            if ((ucp_len - 1) >= min &&
+                (ucp_len - 1) <= max) // - 1 for '\n'
             {
-                vec_str_print (&line);
+                printf ("%s", p);
             }
 
-            vec_str_free (&line);
+            free (p);
             vec_str_init (&line, MIN_CAP);
         }
     }
