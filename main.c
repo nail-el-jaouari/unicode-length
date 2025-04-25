@@ -6,7 +6,7 @@
 #include "vec-str.h"
 #include "unicode-length-utf8.h"
 
-#define MAX (2 + 1)
+#define MAX (1024 + 1)
 
 void usage (int err);
 
