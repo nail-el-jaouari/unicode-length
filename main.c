@@ -101,6 +101,24 @@ int main (int argc, char *argv[])
 
         if (p == NULL)
         {
+            // if the last line from stdin doesn't end with '\n'
+            size_t sz = line.size;
+            if (sz > 0) {
+                char *q = vec_str_line (&line);
+                size_t l = strlen (q);
+
+                if (q[l - 1] != '\n')
+                {
+                    size_t ucp_len = unicode_length_u8string (q);
+                    if (ucp_len >= min && ucp_len <= max)
+                    {
+                        printf ("%s\n", q);
+                    }
+                }
+
+                free (q);
+            }
+
             vec_str_free(&line);
             break;
         }
@@ -113,22 +131,23 @@ int main (int argc, char *argv[])
         if (len < (MAX - 1) ||
             buffer[len - 1] == '\n')
         {
-            char *p = vec_str_line (&line);
+            char *q = vec_str_line (&line);
             vec_str_free (&line);
-            size_t ucp_len = unicode_length_u8string (p);
+            size_t ucp_len = unicode_length_u8string (q);
+            int nl = (buffer[len - 1] == '\n') ? 1 : 0;
 
-            if ((ucp_len - 1) >= min &&
-                (ucp_len - 1) <= max) // - 1 for '\n'
+            if ((ucp_len - nl) >= min &&
+                (ucp_len - nl) <= max) // - 1 for '\n'
             {
-                printf ("%s", p);
+                printf ("%s", q);
             }
 
-            free (p);
+            free (q);
             vec_str_init (&line, MIN_CAP);
         }
     }
 
-    vec_str_free (&line);
+    //vec_str_free (&line);
 exit_program:
     return ret;
 }
